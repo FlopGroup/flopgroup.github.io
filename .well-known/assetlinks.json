@@ -4,7 +4,7 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.flopcode.fusion.debug",
-      "sha256_cert_fingerprints": ["COLLE_ICI_L_EMPREINTE_SHA256_DEBUG"]
+      "sha256_cert_fingerprints": ["0C:EF:CC:D1:1D:8B:F0:63:0A:C4:39:3D:59:07:78:41:6C:AA:CD:9F:44:05:AB:51:DE:D0:43:9E:7C:DF:20:B8"]
     }
   }
 ]
