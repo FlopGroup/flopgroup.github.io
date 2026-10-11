@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A0A0A">
+<title>FUSION — de la musique t'attend</title>
+<style>
+  :root {
+    --bg: #0A0A0A; --card: #1A1A1A; --text: #F4F2ED; --muted: #A9A6A0;
+    --accent: #FF1420; --accent-dim: #D4101B; --track: #2E2E2E;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: radial-gradient(120% 80% at 50% 0%, #2E0509 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    padding-top: max(24px, env(safe-area-inset-top));
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+  main { width: 100%; max-width: 420px; text-align: center; }
+  .logo {
+    width: 84px; height: 84px; border-radius: 26px; margin: 0 auto 28px;
+    background: var(--accent); display: grid; place-items: center;
+    box-shadow: 0 12px 40px rgba(255, 20, 32, .35);
+    animation: pop .6s cubic-bezier(.2, 1.4, .4, 1) both;
+  }
+  .logo svg { width: 46px; height: 46px; fill: #fff; }
+  h1 { font-size: 1.7rem; line-height: 1.25; margin: 0 0 12px; font-weight: 800; letter-spacing: -.01em; }
+  p { color: var(--muted); line-height: 1.55; margin: 0 0 22px; font-size: 1.02rem; }
+  .card { background: var(--card); border-radius: 22px; padding: 22px 20px; margin-top: 6px; }
+  .count { font-size: .95rem; color: var(--muted); margin: 0 0 14px; }
+  .count b { color: var(--text); font-size: 1.1rem; }
+  .bar { height: 6px; border-radius: 3px; background: var(--track); overflow: hidden; margin-bottom: 18px; }
+  .bar i { display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left; animation: shrink 5s linear forwards; }
+  .btn {
+    display: block; width: 100%; padding: 15px 18px; border-radius: 28px; text-decoration: none; border: 0;
+    font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer; text-align: center;
+  }
+  .btn.primary { background: var(--accent); color: #fff; }
+  .btn.primary:active { background: var(--accent-dim); }
+  .btn.ghost { background: transparent; color: var(--text); border: 1.5px solid var(--track); margin-top: 10px; }
+  small { display: block; color: var(--muted); margin-top: 18px; font-size: .85rem; line-height: 1.5; }
+  @keyframes pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+  @media (prefers-reduced-motion: reduce) { .logo, .bar i { animation: none; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="logo" aria-hidden="true">
+    <!-- note de musique -->
+    <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+  </div>
+  <h1>Quelqu'un veut partager de la musique avec toi&nbsp;🎶</h1>
+  <p>FUSION est un lecteur de musique 100&nbsp;% hors ligne. Installe-le en un instant, puis scanne à nouveau le code pour recevoir tes titres.</p>
+
+  <div class="card">
+    <p class="count" id="count">Redirection vers le Play Store dans <b id="sec">5</b>&nbsp;s…</p>
+    <div class="bar" id="bar"><i></i></div>
+    <a class="btn primary" id="store" href="https://play.google.com/store/apps/details?id=com.flopcode.fusion">Installer FUSION</a>
+    <a class="btn ghost" id="open" href="#">J'ai déjà FUSION : l'ouvrir</a>
+  </div>
+  <small>Astuce : si tu as déjà FUSION, ce code s'ouvre normalement tout seul, même sans connexion internet.</small>
+</main>
+
+<script>
+(function () {
+  var STORE = "https://play.google.com/store/apps/details?id=com.flopcode.fusion";
+  var hash = location.hash || "";                       // contient le jeton : il reste sur ce téléphone, jamais envoyé au serveur
+  var params = new URLSearchParams(hash.replace(/^#/, ""));
+  var pkg = params.get("g") || "com.flopcode.fusion";    // app émettrice (…debug en test)
+  var cancelled = false, left = 5;
+
+  // Ouvre FUSION directement avec le même lien (intent explicite vers l'app : fonctionne même si le lien n'est pas « vérifié »)
+  var intentUrl = "intent://" + location.host + "/r" + hash + "#Intent;scheme=https;package=" + pkg + ";end";
+  var openBtn = document.getElementById("open");
+  openBtn.setAttribute("href", intentUrl);
+  openBtn.addEventListener("click", function () {
+    cancelled = true;                                    // l'utilisateur a choisi d'ouvrir l'app : on stoppe la redirection
+    document.getElementById("count").textContent = "Ouverture de FUSION…";
+    document.getElementById("bar").style.display = "none";
+  });
+  document.getElementById("store").addEventListener("click", function () { cancelled = true; });
+
+  var secEl = document.getElementById("sec");
+  var timer = setInterval(function () {
+    if (cancelled) { clearInterval(timer); return; }
+    left -= 1;
+    secEl.textContent = Math.max(left, 0);
+    if (left <= 0) { clearInterval(timer); location.replace(STORE); }
+  }, 1000);
+})();
+</script>
+</body>
+</html>
