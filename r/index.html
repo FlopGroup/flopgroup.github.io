@@ -36,7 +36,7 @@
   .count { font-size: .95rem; color: var(--muted); margin: 0 0 14px; }
   .count b { color: var(--text); font-size: 1.1rem; }
   .bar { height: 6px; border-radius: 3px; background: var(--track); overflow: hidden; margin-bottom: 18px; }
-  .bar i { display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left; animation: shrink 5s linear forwards; }
+  .bar i { display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left; animation: shrink 10s linear forwards; }
   .btn {
     display: block; width: 100%; padding: 15px 18px; border-radius: 28px; text-decoration: none; border: 0;
     font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer; text-align: center;
@@ -74,7 +74,7 @@
   var hash = location.hash || "";                       // contient le jeton : il reste sur ce téléphone, jamais envoyé au serveur
   var params = new URLSearchParams(hash.replace(/^#/, ""));
   var pkg = params.get("g") || "com.flopcode.fusion";    // app émettrice (…debug en test)
-  var cancelled = false, left = 5;
+  var cancelled = false, left = 10;
 
   // Ouvre FUSION directement avec le même lien (intent explicite vers l'app : fonctionne même si le lien n'est pas « vérifié »)
   var intentUrl = "intent://" + location.host + "/r" + hash + "#Intent;scheme=https;package=" + pkg + ";end";
